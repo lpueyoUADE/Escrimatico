@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'GoogleSansCode';
+    src: url('../assets/fonts/GoogleSansCode/GoogleSansCode-VariableFont_wght.ttf') format('opentype');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #1d1d1d;
+    height: 100vh;
+}
