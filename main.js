@@ -1,7 +1,14 @@
+import BootScene from './scenes/BootScene.js';
+import CreditsScene from './scenes/CreditsScene.js';
+import GameScene from './scenes/GameScene.js';
+import HighScoreScene from './scenes/HighScoreScene.js';
+import LevelSelectScene from './scenes/LevelSelectScene.js';
+import MainMenuScene from './scenes/MainMenuScene.js';
+
 const config = {
   type: Phaser.AUTO,
-  width: 1500,
-  height: 800,
+  // width: 1500,
+  // height: 800,
   backgroundColor: '#1d1d1d',
   // transparent: true,
 
@@ -10,7 +17,8 @@ const config = {
     MainMenuScene,
     LevelSelectScene,
     GameScene,
-    HighScoreScene
+    HighScoreScene,
+    CreditsScene
   ],
 
   scale: {

@@ -1,4 +1,4 @@
-class Palabra {
+export class Palabra {
     constructor(scene, texto, x, y, textureKey) {
         this.scene = scene;
         this.texto = texto;
@@ -60,9 +60,36 @@ class Palabra {
     }
 }
 
-class GameScene extends Phaser.Scene {
+export default class GameScene extends Phaser.Scene {
     constructor() {
         super('GameScene');
+    }
+
+    createExplosion(x, y, color) {
+        const lifespan = 500;
+        const particles = this.add.particles(0, 0, 'explosion', {
+            x: x,
+            y: y,
+
+            speed: { min: 200, max: 300 },
+            angle: { min: 0, max: 360 },
+
+            scale: { start: 0.2, end: 0 },
+
+            alpha: { start: 0.7, end: 0 },
+
+            lifespan: lifespan,
+
+            tint: 0xaaffaa,
+            blendMode: 'ADD',
+
+            quantity: 20,
+            frequency: 200
+        });
+
+        this.time.delayedCall(lifespan, () => {
+            particles.destroy();
+        });
     }
 
     create() {
@@ -165,6 +192,9 @@ class GameScene extends Phaser.Scene {
             palabra.update();
 
             if (palabra.isOutOfBounds(bottomLimit)) {
+                const x = palabra.container.x;
+                const y = palabra.container.y;
+                this.createExplosion(x, y, "0xffaaaa");
                 palabra.destroy();
                 this.palabras.splice(i, 1);
 
@@ -240,7 +270,7 @@ class GameScene extends Phaser.Scene {
 
         this.vidasText.setText('Vidas: ' + this.vidas);
 
-        this.cameras.main.flash(200, 60, 0, 0);
+        // this.cameras.main.flash(200, 60, 0, 0);
 
         if (this.vidas <= 0) {
             this.gameOver();
@@ -275,6 +305,9 @@ class GameScene extends Phaser.Scene {
 
         if (this.inputText === this.currentTarget.texto) {
             // ✔ Correcto
+            const x = this.currentTarget.container.x;
+            const y = this.currentTarget.container.y;
+            this.createExplosion(x, y, "0xaaffaa");
             this.currentTarget.destroy();
 
             const index = this.palabras.indexOf(this.currentTarget);
@@ -285,7 +318,7 @@ class GameScene extends Phaser.Scene {
             this.score++;
             this.scoreText.setText('Puntos: ' + this.score);
 
-            this.cameras.main.flash(100, 0, 60, 0);
+            // this.cameras.main.flash(100, 0, 60, 0);
         } else {
             // ❌ Incorrecto
             this.perderVida();

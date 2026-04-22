@@ -1,4 +1,4 @@
-class LevelSelectScene extends Phaser.Scene {
+export default class LevelSelectScene extends Phaser.Scene {
   constructor() {
     super('LevelSelectScene');
   }

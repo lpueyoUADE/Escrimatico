@@ -9,4 +9,5 @@ body {
     overflow: hidden;
     background: #1d1d1d;
     height: 100vh;
+    cursor: url('../assets/images/cursor/cursor2.png') 16 16, auto;
 }
