@@ -35,6 +35,10 @@ export default class BootScene extends Phaser.Scene {
     // Yae
     this.load.image('yae1', 'assets/images/Yae/YaeFullBody.png');
     this.load.image('yaeLogo', 'assets/images/Yae/YaeLogo.png');
+
+    // Dialogo
+    this.load.image('dialogoIzq', 'assets/images/dialog/dialogoIzq.png');
+    this.load.image('dialogoDer', 'assets/images/dialog/dialogoDer.png');
   }
 
   create() {

@@ -5,20 +5,6 @@ export default class MainMenuScene extends Phaser.Scene {
         super('MainMenuScene');
     }
 
-    addImageWithShadow(image, x, y, scale, depth, shadowXOffset, shadowYOffset, alpha) {
-        this.add.image(x, y, image)
-            .setOrigin(1, 1)
-            .setScale(scale)
-            .setDepth(depth);
-
-        this.add.image(x + shadowXOffset, y + shadowYOffset, image)
-            .setOrigin(1, 1)
-            .setScale(scale + 0.01)
-            .setDepth(depth - 1)
-            .setTint(0x000000)
-            .setAlpha(alpha);
-    }
-
     createButton(x, y, text, callback) {
         const button = this.add.text(x, y, text, {
             // fontFamily: 'Fredoka',
@@ -92,19 +78,99 @@ export default class MainMenuScene extends Phaser.Scene {
             .setDepth(-10);
 
         // Yae
-        this.addImageWithShadow('yae1', width - 25, height - 10, 0.3, 10, 10, 13, 0.7);
+        this.yae = this.add.image(width - 50, height - 25, 'yae1')
+            .setOrigin(1, 1)
+            .setScale(0.3)
+            .setDepth(10)
+            .setInteractive();
+
+        this.yaeGlow = this.yae.postFX.addGlow(0xffffff, 2, 0);
+        this.yaeGlow.outerStrength = 0;
+        
+        // Dialogo
+        const bubbleContainer = this.add.container(0, 0).setDepth(20).setAlpha(0);
+
+        const bubble = this.add.image(this.yae.x, this.yae.y, 'dialogoIzq')
+            // .setAlpha(0)
+            .setOrigin(1, 1)
+            .setScale(0.25)
+            .setDepth(10);
+
+        const yaeBounds = this.yae.getBounds();
+        const bubbleBounds = bubble.getBounds();
+
+        bubble.setPosition(
+            yaeBounds.right - 150,
+            yaeBounds.top
+        );
+
+        const bubbleText = this.add.text(0, 0,
+            '¡Hola! Soy Yae la Yaguareté\ny juntos vamos a conocer la Argentina una letra a la vez.',
+            {
+                fontSize: '20px',
+                color: '#000000',
+                wordWrap: { width: 220 }
+            })
+            .setOrigin(0.5)
+            // .setAlpha(0)
+            .setDepth(11);
+        
+        bubbleText.setPosition(
+            bubbleBounds.left + 20,
+            bubbleBounds.top - 280
+        )
+
+        bubbleContainer.add([bubble, bubbleText]);
+
+        let bubbleTween = null;
+
+        this.yae.on('pointerover', () => {
+            if (bubbleTween) bubbleTween.stop();
+
+            bubbleTween = this.tweens.add({
+                targets: bubbleContainer,
+                alpha: 1,
+                duration: 300
+            });
+
+            this.tweens.add({
+                targets: this.yaeGlow,
+                outerStrength: 4,
+                duration: 200,
+                ease: 'Sine.easeOut'
+            });
+        });
+
+        this.yae.on('pointerout', () => {
+            if (bubbleTween) bubbleTween.stop();
+
+            bubbleTween = this.tweens.add({
+                targets: bubbleContainer,
+                alpha: 0,
+                duration: 300
+            });
+
+            this.tweens.add({
+                targets: this.yaeGlow,
+                outerStrength: 0,
+                duration: 200,
+                ease: 'Sine.easeIn'
+            });
+        });
+
+        this.tweens.add({
+            targets: bubbleContainer,
+            y: bubbleContainer.y - 5,
+            duration: 700,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
 
         this.title = this.add.image(width / 2, 150, 'title')
             .setOrigin(0.5)
             .setScale(0.4)
             .setDepth(10);
-
-        // Opciones
-        this.options = ['JUGAR', 'HIGH SCORES'];
-        this.selectedIndex = 0;
-        this.menuTexts = [];
-
-        this.startY = centerY;
 
         // Botones
         this.createButtons();
