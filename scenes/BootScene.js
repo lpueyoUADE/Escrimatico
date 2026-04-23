@@ -24,6 +24,7 @@ export default class BootScene extends Phaser.Scene {
     // Background
     this.load.image('background', 'assets/images/background/BG.png');
     this.load.image('backgroundNight', 'assets/images/background/BGNight.png');
+    this.load.image('backgroundSunset', 'assets/images/background/BGSunset.png');
 
     // Main Menu
     this.load.image('title', 'assets/images/mainmenu/title.png');

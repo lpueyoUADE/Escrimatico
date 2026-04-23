@@ -345,14 +345,20 @@ export default class GameScene extends Phaser.Scene {
             .setAlpha(1)
             .setDepth(100);
 
-        const gameOverText = this.add.text(width / 2, height / 2 - 20, 'Te quedaste sin vidas', {
+        const gameOverText = this.add.text(width / 2, height / 2 - 20, 
+            '¡Excelente!\n'+
+            'Sumaste:\n\n'+
+            '¡ ' + this.score + ' punto' + (this.score == 1? '' : 's') + ' !', 
+            {
             fontSize: '40px',
+            align: 'center',
             color: '#ffffff'
         }).setOrigin(0.5).setDepth(101);
 
-        const subText = this.add.text(width / 2, height / 2 + 40, 'Redirigiendo...', {
+        const subText = this.add.text(width / 2, height / 2 + 125, 'A ver cuantos haces la próxima...', {
             fontSize: '20px',
-            color: '#cccccc'
+            color: '#cccccc',
+            align: 'center'
         }).setOrigin(0.5).setDepth(101);
 
         // ⏱ Delay real

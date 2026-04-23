@@ -68,7 +68,7 @@ export default class MainMenuScene extends Phaser.Scene {
             .setDepth(20);
 
         this.createButton(centerX, startY + spacing, 'High Scores', () => {
-            this.scene.start('HighScoreScene');
+            goToScene(this, 'HighScoreScene');
         })
             .setDepth(20);
 
