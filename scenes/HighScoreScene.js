@@ -1,29 +1,31 @@
-import { goToScene } from '../utils/sceneTransitions.js';
+import BaseScene from './BaseScene.js';
 
-export default class HighScoreScene extends Phaser.Scene {
+export default class HighScoreScene extends BaseScene {
   constructor() {
     super('HighScoreScene');
   }
 
   create() {
-    this.cameras.main.fadeIn(500, 0, 0, 0);
+    super.create();
 
-    const centerX = this.cameras.main.centerX;
-    const startY = this.cameras.main.centerY;
+    this.addTeamFooter();
+
+    this.setTitle('HIGH SCORES');
+
+    this.cameras.main.fadeIn(500, 0, 0, 0);
+    const { width, height } = this.cameras.main;
 
     // Fondo
-    const { width, height } = this.cameras.main;
     this.background = this.add.image(0, 0, 'backgroundSunset')
       .setOrigin(0)
       .setDisplaySize(width, height)
       .setDepth(-10);
 
-    this.add.text(280, 200, 'HIGH SCORES', { fontSize: '32px' });
-    this.add.text(250, 260, 'ESC: Volver');
-
     this.input.keyboard.on('keydown-ESC', () => {
-      goToScene(this, 'MainMenuScene');
+      this.goToScene('MainMenuScene');
     });
+
+    this.createBackButton('MainMenuScene');
 
     // Particulas
     this.fireflies = this.add.particles(0, 0, 'firefly', {
