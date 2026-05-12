@@ -1,3 +1,5 @@
+import TextButton from '../components/TextButton.js';
+
 export default class BaseScene extends Phaser.Scene {
     constructor(key) {
         super(key);
@@ -22,19 +24,35 @@ export default class BaseScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive();
 
+        button.enabled = true;
+
         // Hover
         button.on('pointerover', () => {
-            button.setScale(1.1);
+            if(!button.enabled)
+                return;
+
             button.setColor('#ffff00');
+            this.tweens.add({
+                targets: button,
+                scale: 1.1,
+                duration: 100,
+            });
         });
 
         button.on('pointerout', () => {
-            button.setScale(1);
+            this.tweens.add({
+                targets: button,
+                scale: 1,
+                duration: 100,
+            });
             button.setColor(color);
         });
 
         // Click
         button.on('pointerdown', () => {
+            if(!button.enabled)
+                return;
+
             this.tweens.add({
                 targets: button,
                 scale: 0.95,
@@ -51,7 +69,7 @@ export default class BaseScene extends Phaser.Scene {
     createBackButton(nextScene, text = "Volver") {
         const { width, height } = this.cameras.main;
 
-        const backButton = this.createButton(100, 100, text, () => { this.goToScene(nextScene); })
+        const backButton = new TextButton(this, 100, 100, text, () => { this.goToScene(nextScene); })
             .setFontSize("24px");
     }
 

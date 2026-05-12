@@ -2,9 +2,11 @@ export default class MapRegion extends Phaser.GameObjects.Container {
     constructor(scene, x, y, texture, name, onClick) {
         super(scene, x, y);
 
+        // Estado
         this.scene = scene;
         this.name = name;
         this.selected = false;
+        this.unlocked = false;
 
         // Imagen de la región (PNG con transparencia)
         this.image = scene.add.image(0, 0, texture)
@@ -19,10 +21,12 @@ export default class MapRegion extends Phaser.GameObjects.Container {
 
         // Hover
         this.image.on('pointerover', () => {
+            if (!this.unlocked) return;
+
             this.scene.tweens.killTweensOf(this.glow);
-            
+
             this.parentContainer.bringToTop(this);
-            
+
             this.scene.tweens.add({
                 targets: this.glow,
                 outerStrength: 4,
@@ -48,6 +52,8 @@ export default class MapRegion extends Phaser.GameObjects.Container {
         });
 
         this.image.on('pointerdown', () => {
+            if (!this.unlocked) return;
+
             this.scene.selectRegion(this);
         });
 
@@ -70,6 +76,21 @@ export default class MapRegion extends Phaser.GameObjects.Container {
                 outerStrength: 0,
                 duration: 150
             });
+        }
+    }
+
+    setUnlocked(unlocked) {
+        this.unlocked = unlocked;
+
+        if (this.unlocked) {
+            this.image.clearTint();
+            this.image.setAlpha(1);
+            this.image.setInteractive({ pixelPerfect: true });
+        } else {
+            // efecto blanco y negro (simulado)
+            this.image.setTint(0x888888);
+            this.image.setAlpha(0.6);
+            this.image.disableInteractive();
         }
     }
 }

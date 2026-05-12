@@ -1,5 +1,8 @@
 import BaseScene from './BaseScene.js';
 import MapRegion from '../components/MapRegion.js';
+import TextButton from '../components/TextButton.js';
+import SaveManager from '../managers/SaveManager.js';
+import GameDatabase from '../data/GameDatabase.js';
 
 export default class LevelSelectScene extends BaseScene {
     constructor() {
@@ -19,6 +22,18 @@ export default class LevelSelectScene extends BaseScene {
 
         container.setDepth(11);
 
+        container.setInteractive(
+            new Phaser.Geom.Rectangle(
+                -base.width / 2,
+                -base.height / 2,
+                base.width,
+                base.height
+            ),
+            Phaser.Geom.Rectangle.Contains
+        );
+
+        container.originalX = x;
+
         const regions = [
             { key: 'noroeste', name: 'Noroeste' },
             { key: 'cuyo', name: 'Cuyo' },
@@ -37,11 +52,49 @@ export default class LevelSelectScene extends BaseScene {
                 region.name,
                 (name) => this.onRegionSelected(name)
             );
-
+            layer.regionKey = region.key;
+            this.regions.push(layer);
             container.add(layer);
         });
 
+        this.regions.forEach(r => {
+            const unlocked =
+                SaveManager.isRegionUnlocked(r.regionKey);
+
+            r.setUnlocked(unlocked);
+        });
+
         return container;
+    }
+
+    createDebugPanel() {
+        const panel = this.add.container(30, 200).setDepth(200);
+
+        this.regions.forEach((region, index) => {
+            const btn = this.add.text(0, index * 35, region.name, {
+                fontSize: '16px',
+                backgroundColor: '#000',
+                padding: { x: 15, y: 10 }
+            })
+                .setInteractive()
+                .on('pointerdown', () => {
+                    const newValue = !region.unlocked;
+
+                    region.setUnlocked(newValue);
+
+                    SaveManager.saveData
+                        .regions[region.name]
+                        .unlocked = newValue;
+
+                    SaveManager.save();
+
+                    btn.setText(
+                        `${region.name} ${region.unlocked ? '✅' : '❌'}`
+                    );
+                });
+            btn.setText(`${region.name} ${region.unlocked ? '✅' : '❌'}`);
+            panel.add(btn);
+        });
     }
 
     create() {
@@ -53,6 +106,7 @@ export default class LevelSelectScene extends BaseScene {
 
         this.selectedRegion = null;
         this.regionUI = null;
+        this.regions = [];
 
         this.setTitle("SELECCIÓN DE NIVEL");
 
@@ -62,7 +116,6 @@ export default class LevelSelectScene extends BaseScene {
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
         // Fondo
-
         this.background = this.add.image(0, 0, 'background')
             .setOrigin(0)
             .setDisplaySize(width, height)
@@ -75,7 +128,7 @@ export default class LevelSelectScene extends BaseScene {
             height - 25,
             0.25,
             [1, 1],
-            '¡Elegí una Región de\nla Argentina!'
+            '¡Elegí una Región disponible de\nla Argentina\ny a jugar!'
         );
 
         this.input.keyboard.on('keydown', (event) => {
@@ -88,10 +141,12 @@ export default class LevelSelectScene extends BaseScene {
             }
         });
 
-        this.createMapSelector(
-            centerX - 250,
+        this.mapContainer = this.createMapSelector(
+            centerX,// - 300,
             centerY + 50
         );
+
+        this.createDebugPanel();
     }
 
     onRegionSelected(name) {
@@ -109,6 +164,13 @@ export default class LevelSelectScene extends BaseScene {
         region.parentContainer.bringToTop(region);
 
         this.showRegionUI(region);
+
+        this.tweens.add({
+            targets: this.mapContainer,
+            x: this.mapContainer.originalX - 320,
+            duration: 700,
+            ease: 'Sine.easeInOut'
+        });
     }
 
 
@@ -122,51 +184,330 @@ export default class LevelSelectScene extends BaseScene {
             this.regionUI.destroy();
             this.regionUI = null;
         }
+
+        this.tweens.add({
+            targets: this.mapContainer,
+            x: this.mapContainer.originalX,
+            duration: 700,
+            ease: 'Sine.easeInOut'
+        });
     }
 
     showRegionUI(region) {
-        // Si ya existe, destruir
+
         if (this.regionUI) {
             this.regionUI.destroy();
         }
 
-        const { centerX, centerY, height } = this.cameras.main;
+        const { centerX, centerY } = this.cameras.main;
 
-        const container = this.add.container(centerX + 250, centerY + 50)
+        const container = this.add.container(centerX + 260, centerY + 50)
             .setDepth(100);
 
-        // Fondo
+        // =========================
+        // ESTADO
+        // =========================
+
+        let selectedCategory = null;
+        const categories = [];
+
+        // =========================
+        // FONDO
+        // =========================
+
         const bg = this.add.image(0, 0, 'mapa2')
-            .setDisplaySize(700, 500)
+            .setDisplaySize(800, 600)
             .setOrigin(0.5);
 
-        // Texto
-        const title = this.add.text(0, -30, region.name, {
+        // =========================
+        // TITULO
+        // =========================
+
+        const title = this.add.text(0, 0, region.name, {
             fontFamily: 'LuckiestGuy',
-            fontSize: '32px',
+            fontSize: '36px',
             color: '#ffffff',
             stroke: '#000000',
             strokeThickness: 5
         }).setOrigin(0.5);
 
-        const desc = this.add.text(0, 0, `Descripción de ${region.name}`, {
-            fontFamily: 'Fredoka',
-            fontSize: '18px',
-            color: '#dddddd'
-        }).setOrigin(0.5);
+        // =========================
+        // LOCK TEXT
+        // =========================
 
-        const playBtn = this.createButton(100, 0, 'Jugar', () => { this.startLevel(region); }, '#00ff00');
-        const cancelBtn = this.createButton(-100, 0, 'Cancelar', () => { this.clearSelection(); }, '#ff0000');
+        const lockText = this.add.text(
+            0,
+            -150,
+            '',
+            {
+                fontFamily: 'Fredoka',
+                fontSize: '20px',
+                color: '#ffcc66',
+                stroke: '#000000',
+                wordWrap: { width: 500 },
+                strokeThickness: 4,
+                align: 'center'
+            }
+        ).setOrigin(0.5);
 
-        container.add([bg, title, desc, playBtn, cancelBtn]);
+        // =========================
+        // CATEGORY FACTORY
+        // =========================
 
-        const padding = 75;
-        const topY = -bg.displayHeight / 2 + padding;;
-        const bottomY = bg.displayHeight / 2 - padding;
+        const createCategory = (
+            x,
+            y,
+            imageKey,
+            label,
+            levelKey
+        ) => {
+
+            const unlocked =
+                SaveManager.isLevelUnlocked(
+                    region.regionKey,
+                    levelKey
+                );
+
+            const category = this.add.container(x, y);
+
+            category.selected = false;
+            category.unlocked = unlocked;
+
+            const imageSize = 180;
+            // Imagen
+            const border = this.add.rectangle(
+                0,
+                0,
+                imageSize + 5,
+                imageSize + 5,
+                0x000000
+            );
+
+            const image = this.add.image(0, 0, imageKey)
+                .setDisplaySize(imageSize, imageSize)
+                .setOrigin(0.5)
+                .setInteractive();
+
+            // Locked visuals
+            if (!unlocked) {
+                image.setTint(0x666666);
+                image.setAlpha(0.7);
+            }
+
+            // Glow
+            const glow = border.postFX.addGlow(
+                0xffffaa,
+                0,
+                0
+            );
+
+            // Texto
+            const text = this.add.text(0, 120, label, {
+                fontFamily: 'LuckiestGuy',
+                fontSize: '24px',
+                color: unlocked ? '#ffffff' : '#999999',
+                stroke: '#000000',
+                strokeThickness: 4
+            }).setOrigin(0.5);
+
+            category.add([border, image, text]);
+
+            // =========================
+            // HOVER
+            // =========================
+
+            image.on('pointerover', () => {
+
+                // LOCKED
+                if (!unlocked) {
+                    this.tweens.killTweensOf(category);
+
+                    return;
+                }
+
+                // NORMAL
+                if (!category.selected) {
+                    glow.outerStrength = 4;
+                }
+
+                this.tweens.killTweensOf(category);
+
+                this.tweens.add({
+                    targets: category,
+                    scale: 1.08,
+                    duration: 120,
+                    ease: 'Sine.easeOut'
+                });
+            });
+
+            image.on('pointerout', () => {
+                this.tweens.killTweensOf(category);
+
+                if (!category.selected) {
+                    this.tweens.add({
+                        targets: glow,
+                        outerStrength: 0,
+                        duration: 120,
+                        ease: 'Sine.easeOut'
+                    });
+
+                    this.tweens.add({
+                        targets: category,
+                        scale: 1,
+                        duration: 120,
+                        ease: 'Sine.easeOut'
+                    });
+                }
+            });
+
+            // =========================
+            // CLICK
+            // =========================
+
+            image.on('pointerdown', () => {
+                // BLOQUEADO
+                if (!unlocked) {
+                    return;
+                }
+
+                // Deseleccionar todas
+                categories.forEach(c => {
+
+                    c.selected = false;
+
+                    c.glow.outerStrength = 0;
+
+                    this.tweens.killTweensOf(c);
+
+                    this.tweens.add({
+                        targets: c,
+                        scale: 1,
+                        duration: 120,
+                        ease: 'Sine.easeOut'
+                    });
+                });
+
+                lockText.setText(
+                    GameDatabase
+                        .regions[region.regionKey]
+                        .levels[levelKey].description
+                );
+
+                // Seleccionar actual
+                category.selected = true;
+
+                playBtn.setEnabled(true);
+
+                glow.outerStrength = 6;
+
+                this.tweens.killTweensOf(category);
+
+                this.tweens.add({
+                    targets: category,
+                    scale: 1.08,
+                    duration: 120,
+                    ease: 'Sine.easeOut'
+                });
+
+                selectedCategory = label;
+            });
+
+            category.glow = glow;
+
+            categories.push(category);
+
+            return category;
+        };
+
+        // =========================
+        // COLUMNAS
+        // =========================
+
+        const flora = createCategory(
+            -220,
+            20,
+            GameDatabase.regions[region.regionKey].levels.flora.coverImage,
+            'flora',
+            'flora'
+        );
+
+        const fauna = createCategory(
+            0,
+            20,
+            GameDatabase.regions[region.regionKey].levels.fauna.coverImage,
+            'fauna',
+            'fauna'
+        );
+
+        const folclore = createCategory(
+            220,
+            20,
+            GameDatabase.regions[region.regionKey].levels.folclore.coverImage,
+            'folclore',
+            'folclore'
+        );
+
+        // =========================
+        // BOTONES
+        // =========================
+
+        const playBtn = new TextButton(
+            this,
+            100,
+            0,
+            'Jugar',
+            () => {
+
+                if (!selectedCategory) {
+                    console.log("Seleccioná una categoría");
+                    return;
+                }
+
+                this.startLevel(region, selectedCategory);
+
+            },
+            '#00ff00'
+        );
+
+        playBtn.setEnabled(false);
+
+        const cancelBtn = new TextButton(
+            this,
+            -100,
+            0,
+            'Cancelar',
+            () => { this.clearSelection(); },
+            '#ff0000'
+        );
+
+        // =========================
+        // ADD
+        // =========================
+
+        container.add([
+            bg,
+            title,
+            lockText,
+            flora,
+            fauna,
+            folclore,
+            playBtn,
+            cancelBtn
+        ]);
+
+        // =========================
+        // LAYOUT
+        // =========================
+
+        const padding = 70;
+
+        const topY = -bg.displayHeight / 2 + padding;
+        const buttonY = bg.displayHeight / 2 - padding;
 
         title.setY(topY);
-        playBtn.setY(bottomY);
-        cancelBtn.setY(bottomY);
+
+        playBtn.setY(buttonY);
+        cancelBtn.setY(buttonY);
 
         this.regionUI = container;
     }

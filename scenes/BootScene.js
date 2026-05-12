@@ -59,6 +59,11 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('firefly', 'https://labs.phaser.io/assets/particles/yellow.png');
         this.load.image('explosion', 'https://labs.phaser.io/assets/particles/red.png');
 
+        // Level Select
+        this.load.image('noroeste_flora', 'assets/images/regions/noroeste/noroeste_flora.jpg');
+        this.load.image('noroeste_fauna', 'assets/images/regions/noroeste/noroeste_fauna.jpg');
+        this.load.image('noroeste_folclore', 'assets/images/regions/noroeste/noroeste_folclore.jpg');
+
         // Yae
         this.load.image('yae1', 'assets/images/Yae/YaeFullBody.png');
         this.load.image('yaeLogo', 'assets/images/Yae/YaeLogo.png');

@@ -1,4 +1,5 @@
 import BaseScene from './BaseScene.js';
+import TextButton from '../components/textButton.js';
 
 export default class MainMenuScene extends BaseScene {
     constructor() {
@@ -11,15 +12,15 @@ export default class MainMenuScene extends BaseScene {
         const centerX = this.cameras.main.centerX;
         const startY = this.cameras.main.centerY;
 
-        this.createButton(centerX, startY, 'Jugar', () => {
+        new TextButton(this, centerX, startY, 'Jugar', () => {
             this.goToScene('LevelSelectScene');
         }).setDepth(20);
 
-        this.createButton(centerX, startY + spacing, 'High Scores', () => {
+        new TextButton(this, centerX, startY + spacing, 'High Scores', () => {
              this.goToScene('HighScoreScene');
         }).setDepth(20);
 
-        this.createButton(centerX, startY + spacing * 2, 'Créditos', () => {
+        new TextButton(this, centerX, startY + spacing * 2, 'Créditos', () => {
              this.goToScene('CreditsScene');
         }).setDepth(20);
     }
