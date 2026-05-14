@@ -1,5 +1,5 @@
 import BaseScene from './BaseScene.js';
-import TextButton from '../components/textButton.js';
+import TextButton from '../components/TextButton.js';
 
 export default class MainMenuScene extends BaseScene {
     constructor() {
