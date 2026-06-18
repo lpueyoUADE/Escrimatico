@@ -34,7 +34,7 @@ class SaveManager {
     constructor() {
         this.saveData = null;
         this.init();
-        this.scoreToNextLevel = 5;
+        this.scoreToNextLevel = 15;
     }
 
     // =========================================

@@ -75,6 +75,14 @@ export default class BootScene extends Phaser.Scene {
 
         // Boton
         this.load.image('button', 'assets/images/button/button.png');
+
+        //------------------------------------------------------------------------------
+        // Audio
+        this.load.audio('bgMusic1', 'assets/audio/music1.ogg');
+        this.load.audio('bgMusic2', 'assets/audio/music2.ogg');
+        this.load.audio('bgMusic3', 'assets/audio/music3.ogg');
+        this.load.audio('correct', 'assets/audio/correct.ogg');
+        this.load.audio('error', 'assets/audio/error.ogg');
     }
 
     create() {

@@ -1,4 +1,5 @@
 import BaseScene from './BaseScene.js';
+import SaveManager from '../managers/SaveManager.js';
 
 export default class HighScoreScene extends BaseScene {
   constructor() {
@@ -11,6 +12,9 @@ export default class HighScoreScene extends BaseScene {
     this.addTeamFooter();
 
     this.setTitle('HIGH SCORES');
+    
+    // Musica
+    this.playMusicWithFadeIn('bgMusic1');
 
     this.cameras.main.fadeIn(500, 0, 0, 0);
     const { width, height } = this.cameras.main;
@@ -52,5 +56,57 @@ export default class HighScoreScene extends BaseScene {
       blendMode: 'ADD'
     })
       .setDepth(5);
+
+    const startX = this.cameras.main.width / 2 - 50;
+    let currentY = 135;
+
+    Object.entries(
+      SaveManager.saveData.regions
+    ).forEach(([regionKey, regionData]) => {
+
+      this.add.text(
+        startX,
+        currentY,
+        regionKey.toUpperCase(),
+        {
+          fontSize: '24px',
+          fontFamily: 'LuckiestGuy',
+          color: '#ffff66',
+          stroke: '#000000',
+          strokeThickness: 7
+        }
+      );
+
+      currentY += 30;
+
+      Object.entries(
+        regionData.levels
+      ).forEach(([levelKey, levelData]) => {
+
+        const score = levelData.score || 0;
+
+        const rank =
+          score >= SaveManager.scoreToNextLevel
+            ? '⭐'
+            : '';
+
+        this.add.text(
+          startX + 30,
+          currentY,
+          `${levelKey}: ${score} pts ${rank}`,
+          {
+            fontSize: '16px',
+            fontFamily: 'LuckiestGuy',
+            stroke: '#000000',
+            strokeThickness: 4,
+            color: score >= SaveManager.scoreToNextLevel ? '#0f0' : '#ffffff'
+          }
+        );
+
+        currentY += 25;
+      });
+
+      currentY += 20;
+    });
   }
 }

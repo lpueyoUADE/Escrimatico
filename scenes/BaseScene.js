@@ -7,13 +7,14 @@ export default class BaseScene extends Phaser.Scene {
 
     goToScene(nextScene, data = null) {
         this.cameras.main.fadeOut(400);
+        this.fadeOutMusic();
 
         this.time.delayedCall(400, () => {
             this.scene.start(nextScene, data);
         });
     }
 
-    createButton(x, y, text, callback, color='#ffffff') {
+    createButton(x, y, text, callback, color = '#ffffff') {
         const button = this.add.text(x, y, text, {
             fontFamily: 'LuckiestGuy',
             fontSize: '36px',
@@ -28,7 +29,7 @@ export default class BaseScene extends Phaser.Scene {
 
         // Hover
         button.on('pointerover', () => {
-            if(!button.enabled)
+            if (!button.enabled)
                 return;
 
             button.setColor('#ffff00');
@@ -50,7 +51,7 @@ export default class BaseScene extends Phaser.Scene {
 
         // Click
         button.on('pointerdown', () => {
-            if(!button.enabled)
+            if (!button.enabled)
                 return;
 
             this.tweens.add({
@@ -89,13 +90,13 @@ export default class BaseScene extends Phaser.Scene {
                 fill: true
             }
         }).setOrigin(0.5, 0.5)
-        .setDepth(100);
+            .setDepth(100);
     }
 
     setDevBuildText() {
         const centerX = this.cameras.main.centerX;
         const { width, height } = this.cameras.main;
-        
+
         this.add.text(width - 150, 10, "Development Build", {
             fontSize: '14px',
             stroke: '#000000',
@@ -139,7 +140,7 @@ export default class BaseScene extends Phaser.Scene {
 
         // Texto centrado
         const bubbleText = this.add.text(0, 0, bubbleInnerText, {
-            fontFamily:'Fredoka',
+            fontFamily: 'Fredoka',
             fontSize: '18px',
             color: '#000000',
             wordWrap: { width: 220 },
@@ -209,7 +210,65 @@ export default class BaseScene extends Phaser.Scene {
         });
     }
 
+    playMusicWithFadeIn(key, config = {}) {
+        const { volume = 0.5, loop = true, fadeDuration = 500 } = config;
+
+        // detener tween anterior
+        if (this.musicTween) {
+            this.musicTween.stop();
+            this.musicTween = null;
+        }
+
+        if (this.bgMusic) {
+            this.bgMusic.stop();
+        }
+        this.sound.stopAll();
+        
+        this.bgMusic = this.sound.add(key, {
+            volume: 0,
+            loop
+        });
+
+        this.bgMusic.play();
+
+        this.musicTween = this.tweens.add({
+            targets: this.bgMusic,
+            volume,
+            duration: fadeDuration,
+            ease: 'Linear'
+        });
+    }
+
+    fadeOutMusic(duration = 400, onComplete = null) {
+        if (!this.bgMusic) {
+            if (onComplete) onComplete();
+            return;
+        }
+
+        if (this.musicTween) {
+            this.musicTween.stop();
+            this.musicTween = null;
+        }
+
+        const music = this.bgMusic;
+
+        this.musicTween = this.tweens.add({
+            targets: music,
+            volume: 0,
+            duration,
+            ease: 'Linear',
+            onComplete: () => {
+                music.stop();
+                this.bgMusic = null;
+                this.musicTween = null;
+
+                if (onComplete) onComplete();
+            }
+        });
+    }
+
     create() {
+        this.musicTween = null;
         this.setDevBuildText();
     }
 }

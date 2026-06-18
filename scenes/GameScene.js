@@ -64,6 +64,9 @@ export default class GameScene extends BaseScene {
 
         this.words = GameDatabase.regions[this.region].levels[this.level].words;
 
+        // Musica
+        this.playMusicWithFadeIn('bgMusic2');
+
         // HUD
         this.add.rectangle(
             15,
@@ -206,7 +209,7 @@ export default class GameScene extends BaseScene {
 
         this.input.keyboard.on('keydown-ESC', () => {
             this.input.keyboard.removeAllListeners(); // limpieza
-            this.scene.start('MainMenuScene');
+            this.goToScene('MainMenuScene');
         });
 
         this.spawnEvent = this.time.addEvent({
@@ -485,7 +488,9 @@ export default class GameScene extends BaseScene {
         if (!this.currentTarget) {
 
             this.cameras.main.shake(80, 0.003);
-
+            this.sound.play('error', {
+                volume: 1
+            });
             return;
         }
 
@@ -509,6 +514,10 @@ export default class GameScene extends BaseScene {
                 y,
                 "0xaaffaa"
             );
+
+            this.sound.play('correct', {
+                volume: 1
+            })
 
             this.currentTarget.destroy();
 
@@ -608,7 +617,7 @@ export default class GameScene extends BaseScene {
 
         // ⏱ Delay real
         this.time.delayedCall(4000, () => {
-            this.scene.start('HighScoreScene', { score: this.score });
+            this.goToScene('HighScoreScene');
         });
     }
 }

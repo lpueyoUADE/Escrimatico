@@ -13,6 +13,9 @@ export default class CreditsScene extends BaseScene {
         const startY = this.cameras.main.centerY;
         const { width, height } = this.cameras.main;
 
+        // Musica
+        this.playMusicWithFadeIn('bgMusic1');
+
         // Fondo
         this.background = this.add.image(0, 0, 'backgroundNight')
             .setOrigin(0)

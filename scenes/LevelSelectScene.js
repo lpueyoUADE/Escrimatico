@@ -112,6 +112,9 @@ export default class LevelSelectScene extends BaseScene {
 
         this.createBackButton('MainMenuScene');
 
+        // Musica
+    this.playMusicWithFadeIn('bgMusic3');
+
         // Fade in
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
