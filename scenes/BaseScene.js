@@ -5,11 +5,11 @@ export default class BaseScene extends Phaser.Scene {
         super(key);
     }
 
-    goToScene(nextScene) {
+    goToScene(nextScene, data = null) {
         this.cameras.main.fadeOut(400);
 
         this.time.delayedCall(400, () => {
-            this.scene.start(nextScene);
+            this.scene.start(nextScene, data);
         });
     }
 
@@ -90,6 +90,16 @@ export default class BaseScene extends Phaser.Scene {
             }
         }).setOrigin(0.5, 0.5)
         .setDepth(100);
+    }
+
+    setDevBuildText() {
+        const centerX = this.cameras.main.centerX;
+        const { width, height } = this.cameras.main;
+        
+        this.add.text(width - 150, 10, "Development Build", {
+            fontSize: '14px',
+            stroke: '#000000',
+        }).setDepth(100);
     }
 
     addTeamFooter() {
@@ -199,5 +209,7 @@ export default class BaseScene extends Phaser.Scene {
         });
     }
 
-    create() { }
+    create() {
+        this.setDevBuildText();
+    }
 }

@@ -10,19 +10,55 @@ const GameDatabase = {
                     title: "Flora",
                     description:
                         "Explorá la vegetación característica del Noroeste argentino, desde cactus gigantes hasta las yungas subtropicales.",
-                    coverImage: "noroeste_flora"
+                    coverImage: "noroeste_flora",
+                    words: [
+                        "cardon",
+                        "ceibo",
+                        "lapacho",
+                        "aliso",
+                        "tala",
+                        "chañar",
+                        "jarilla",
+                        "mistol",
+                        "tipa",
+                        "yacón"
+                    ]
                 },
                 fauna: {
                     title: "Fauna",
                     description:
                         "Descubrí animales emblemáticos como llamas, vicuñas y cóndores andinos.",
-                    coverImage: "noroeste_fauna"
+                    coverImage: "noroeste_fauna",
+                    words: [
+                        "llama",
+                        "vicuña",
+                        "condor",
+                        "suri",
+                        "puma",
+                        "zorro",
+                        "quirquincho",
+                        "vizcacha",
+                        "guanaco",
+                        "corzuela"
+                    ]
                 },
                 folclore: {
                     title: "Folclore",
                     description:
                         "Conocé las danzas, leyendas y tradiciones populares del Noroeste argentino.",
-                    coverImage: "noroeste_folclore"
+                    coverImage: "noroeste_folclore",
+                    words: [
+                        "zamba",
+                        "carnaval",
+                        "copla",
+                        "baguala",
+                        "charango",
+                        "quena",
+                        "sikuri",
+                        "comparsa",
+                        "apacheta",
+                        "chaya"
+                    ]
                 }
             }
         },
@@ -37,19 +73,55 @@ const GameDatabase = {
                     title: "Flora",
                     description:
                         "Aprendé sobre la flora árida y montañosa de Cuyo, incluyendo jarillas y viñedos.",
-                    coverImage: "cuyo_flora"
+                    coverImage: "cuyo_flora",
+                    words: [
+                        "jarilla",
+                        "algarrobo",
+                        "chañar",
+                        "retamo",
+                        "zampa",
+                        "vid",
+                        "olivo",
+                        "cactus",
+                        "jume",
+                        "tamarisco"
+                    ]
                 },
                 fauna: {
                     title: "Fauna",
                     description:
                         "Explorá especies típicas como guanacos, zorros grises y cóndores.",
-                    coverImage: "cuyo_fauna"
+                    coverImage: "cuyo_fauna",
+                    words: [
+                        "guanaco",
+                        "condor",
+                        "puma",
+                        "zorro",
+                        "mara",
+                        "vizcacha",
+                        "huron",
+                        "aguila",
+                        "gatoandino",
+                        "chimango"
+                    ]
                 },
                 folclore: {
                     title: "Folclore",
                     description:
                         "Descubrí las tradiciones culturales y musicales típicas de la región cuyana.",
-                    coverImage: "cuyo_folclore"
+                    coverImage: "cuyo_folclore",
+                    words: [
+                        "cueca",
+                        "tonada",
+                        "guitarra",
+                        "serenata",
+                        "vendimia",
+                        "payador",
+                        "gaucho",
+                        "rasguido",
+                        "malambo",
+                        "chacarera"
+                    ]
                 }
             }
         },
@@ -64,19 +136,55 @@ const GameDatabase = {
                     title: "Flora",
                     description:
                         "Recorré los pastizales y la vegetación típica de la llanura pampeana.",
-                    coverImage: "pampa_flora"
+                    coverImage: "pampa_flora",
+                    words: [
+                        "ombu",
+                        "ceibo",
+                        "cortadera",
+                        "flechilla",
+                        "pasto",
+                        "tala",
+                        "espinillo",
+                        "algarrobo",
+                        "duraznillo",
+                        "senecio"
+                    ]
                 },
                 fauna: {
                     title: "Fauna",
                     description:
                         "Conocé especies típicas como ñandúes, mulitas y zorros pampeanos.",
-                    coverImage: "pampa_fauna"
+                    coverImage: "pampa_fauna",
+                    words: [
+                        "ñandu",
+                        "mulita",
+                        "zorro",
+                        "peludo",
+                        "vizcacha",
+                        "chimango",
+                        "tero",
+                        "comadreja",
+                        "carancho",
+                        "liebre"
+                    ]
                 },
                 folclore: {
                     title: "Folclore",
                     description:
                         "Aprendé sobre las tradiciones gauchas, las payadas y las danzas folklóricas.",
-                    coverImage: "pampa_folclore"
+                    coverImage: "pampa_folclore",
+                    words: [
+                        "gaucho",
+                        "mate",
+                        "payada",
+                        "milonga",
+                        "malambo",
+                        "rastra",
+                        "boleadora",
+                        "jineteada",
+                        "fogon",
+                        "chacarera"
+                    ]
                 }
             }
         },
@@ -91,19 +199,55 @@ const GameDatabase = {
                     title: "Flora",
                     description:
                         "Explorá la vegetación selvática y ribereña del Litoral argentino.",
-                    coverImage: "litoral_flora"
+                    coverImage: "litoral_flora",
+                    words: [
+                        "yerba",
+                        "lapacho",
+                        "timbo",
+                        "ceibo",
+                        "palmera",
+                        "tacuara",
+                        "guatambu",
+                        "ibira",
+                        "jacaranda",
+                        "pitanga"
+                    ]
                 },
                 fauna: {
                     title: "Fauna",
                     description:
                         "Descubrí yacarés, tucanes, carpinchos y otras especies del Litoral.",
-                    coverImage: "litoral_fauna"
+                    coverImage: "litoral_fauna",
+                    words: [
+                        "yacare",
+                        "carpincho",
+                        "tucan",
+                        "yaguarete",
+                        "mono",
+                        "tapir",
+                        "lobito",
+                        "garza",
+                        "coati",
+                        "curiyu"
+                    ]
                 },
                 folclore: {
                     title: "Folclore",
                     description:
                         "Conocé los ritmos y tradiciones populares del Litoral argentino.",
-                    coverImage: "litoral_folclore"
+                    coverImage: "litoral_folclore",
+                    words: [
+                        "chamame",
+                        "sapucay",
+                        "acordeon",
+                        "guarani",
+                        "terere",
+                        "rasguido",
+                        "litoraleña",
+                        "paye",
+                        "mensu",
+                        "galopa"
+                    ]
                 }
             }
         },
@@ -118,19 +262,55 @@ const GameDatabase = {
                     title: "Flora",
                     description:
                         "Explorá los bosques andinos y las estepas patagónicas.",
-                    coverImage: "patagonia_flora"
+                    coverImage: "patagonia_flora",
+                    words: [
+                        "lenga",
+                        "coihue",
+                        "ñire",
+                        "cipres",
+                        "calafate",
+                        "michay",
+                        "notro",
+                        "maiten",
+                        "radal",
+                        "paramela"
+                    ]
                 },
                 fauna: {
                     title: "Fauna",
                     description:
                         "Descubrí pingüinos, ballenas, guanacos y otras especies típicas.",
-                    coverImage: "patagonia_fauna"
+                    coverImage: "patagonia_fauna",
+                    words: [
+                        "guanaco",
+                        "pinguino",
+                        "ballena",
+                        "orca",
+                        "puma",
+                        "choique",
+                        "huemul",
+                        "zorro",
+                        "lobomarino",
+                        "tonina"
+                    ]
                 },
                 folclore: {
                     title: "Folclore",
                     description:
                         "Aprendé sobre las leyendas y culturas tradicionales patagónicas.",
-                    coverImage: "patagonia_folclore"
+                    coverImage: "patagonia_folclore",
+                    words: [
+                        "tehuelche",
+                        "mapuche",
+                        "kultrun",
+                        "lonko",
+                        "machi",
+                        "tolderia",
+                        "pilquen",
+                        "leyenda",
+                        "fogon",
+                        "pehuen"
+                    ]
                 }
             }
         },
@@ -145,19 +325,55 @@ const GameDatabase = {
                     title: "Flora",
                     description:
                         "Conocé la vegetación típica de las Islas Malvinas y sus paisajes fríos.",
-                    coverImage: "malvinas_flora"
+                    coverImage: "malvinas_flora",
+                    words: [
+                        "tussock",
+                        "musgo",
+                        "liquen",
+                        "gramilla",
+                        "juncal",
+                        "brezo",
+                        "pastizal",
+                        "turbera",
+                        "coiron",
+                        "veronica"
+                    ]
                 },
                 fauna: {
                     title: "Fauna",
                     description:
                         "Explorá la fauna marina y terrestre de las Islas Malvinas.",
-                    coverImage: "malvinas_fauna"
+                    coverImage: "malvinas_fauna",
+                    words: [
+                        "pinguino",
+                        "albatros",
+                        "petrel",
+                        "cormoran",
+                        "lobomarino",
+                        "elefante",
+                        "orca",
+                        "delfin",
+                        "gaviota",
+                        "caracara"
+                    ]
                 },
                 folclore: {
                     title: "Folclore",
                     description:
                         "Descubrí historias y aspectos culturales relacionados con Malvinas.",
-                    coverImage: "malvinas_folclore"
+                    coverImage: "malvinas_folclore",
+                    words: [
+                        "malvinas",
+                        "veterano",
+                        "memoria",
+                        "soberania",
+                        "vigilia",
+                        "homenaje",
+                        "historia",
+                        "bandera",
+                        "patria",
+                        "argentina"
+                    ]
                 }
             }
         }

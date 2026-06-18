@@ -128,7 +128,8 @@ export default class LevelSelectScene extends BaseScene {
             height - 25,
             0.25,
             [1, 1],
-            '¡Elegí una Región disponible de\nla Argentina\ny a jugar!'
+            '¡Elegí una Región disponible de\nla Argentina\ny a jugar!\n\nSumá ' +
+            SaveManager.scoreToNextLevel + ' puntos o más para desbloquear el siguiente nivel.'
         );
 
         this.input.keyboard.on('keydown', (event) => {
@@ -146,7 +147,7 @@ export default class LevelSelectScene extends BaseScene {
             centerY + 50
         );
 
-        this.createDebugPanel();
+        // this.createDebugPanel();
     }
 
     onRegionSelected(name) {
@@ -409,7 +410,7 @@ export default class LevelSelectScene extends BaseScene {
                     ease: 'Sine.easeOut'
                 });
 
-                selectedCategory = label;
+                selectedCategory = levelKey;
             });
 
             category.glow = glow;
@@ -512,7 +513,13 @@ export default class LevelSelectScene extends BaseScene {
         this.regionUI = container;
     }
 
-    startLevel(region) {
-        this.goToScene('GameScene');
+    startLevel(region, levelKey) {
+        this.goToScene(
+            "GameScene",
+            {
+                region: region.regionKey,
+                level: levelKey
+            }
+        );
     }
 }

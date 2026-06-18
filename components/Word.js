@@ -1,38 +1,157 @@
-export class Palabra {
-    constructor(scene, texto, x, y, textureKey) {
+export class Word {
+
+    constructor(scene, texto, x, y, speed) {
+
         this.scene = scene;
         this.texto = texto;
+
         this.isSelected = false;
+        this.speed = speed;
 
-        this.speed = 1;
+        // =========================
+        // TEXTO BASE (GRIS)
+        // =========================
 
-        // 🔲 Fondo tipo polaroid
-        const fondo = scene.add.rectangle(0, 0, 120, 125, 0xffffff)
-            .setStrokeStyle(2, 0x000000);
+        this.baseText = scene.add.text(0, 0, texto, {
+            fontFamily: 'LuckiestGuy',
+            fontSize: '32px',
+            color: '#fff',
 
-        // 🖼 Imagen (arriba)
-        const imagen = scene.add.image(0, -10, textureKey)
-            .setDisplaySize(100, 80);
+            stroke: '#000000',
+            strokeThickness: 7
+        })
+            .setOrigin(0.5);
 
-        // 🔤 Texto (abajo)
-        this.textObj = scene.add.rexBBCodeText(0, 45, texto, {
-            fontSize: '18px',
-            color: '#000000',
-            align: 'center',
-            wordWrap: { width: 100 }
-        }).setOrigin(0.5);
+        // =========================
+        // TEXTO PROGRESO (VERDE)
+        // =========================
 
-        // 📦 Contenedor
+        this.progressText = scene.add.text(0, 0, texto, {
+            fontFamily: 'LuckiestGuy',
+            fontSize: '32px',
+
+            color: '#00ff00',
+
+            stroke: '#000000',
+            strokeThickness: 7
+        })
+            .setOrigin(0.5);
+
+        this.progressText.postFX.addGlow(
+            0x00ff00,
+            2,      // distancia
+            0,      // outer strength
+            false,  // knockout
+            0.08,   // inner strength
+            8       // quality
+        );
+
+        // =========================
+        // MÁSCARA
+        // =========================
+
+        this.maskGraphics = scene.make.graphics();
+
+        this.mask = this.maskGraphics.createGeometryMask();
+
+        this.progressText.setMask(this.mask);
+
+        // =========================
+        // PADDING
+        // =========================
+
+        this.paddingX = 32;
+        this.paddingY = 20;
+
+        const width =
+            this.baseText.width + this.paddingX;
+
+        const height =
+            this.baseText.height + this.paddingY;
+
+        // =========================
+        // BACKGROUND
+        // =========================
+
+        this.background = scene.add.nineslice(
+            0,
+            3,
+            'button',
+            0,
+            width,
+            height,
+            1,
+            1,
+            1,
+            1
+        )
+            .setOrigin(0.5);
+
+        this.backgroundGlow =
+            this.background.postFX.addGlow(
+                0xffff99,
+                0,
+                0,
+                false,
+                0.08,
+                8
+            );
+
+        this.backgroundGlow.setActive(false);
+
+        // =========================
+        // CONTAINER
+        // =========================
+
         this.container = scene.add.container(x, y, [
-            fondo,
-            imagen,
-            this.textObj
+            this.background,
+            this.baseText,
+            this.progressText
         ]);
+
+        this.updateVisual("");
     }
 
     update() {
+
         this.container.y += this.speed;
-        this.container.y = Math.round(this.container.y);
+        this.updateMask();
+    }
+
+    updateMask() {
+
+        const progress =
+            Phaser.Math.Clamp(
+                this.currentProgress || 0,
+                0,
+                1
+            );
+
+        const revealWidth =
+            this.baseText.width * progress;
+
+        this.maskGraphics.clear();
+
+        this.maskGraphics.fillStyle(0xffffff);
+
+        this.maskGraphics.fillRect(
+            this.container.x - this.baseText.width / 2,
+            this.container.y - this.baseText.height / 2,
+            revealWidth,
+            this.baseText.height
+        );
+    }
+
+    updateVisual(inputText) {
+
+        if (!this.isSelected) {
+
+            this.currentProgress = 0;
+            return;
+        }
+
+        this.currentProgress =
+            inputText.length / this.texto.length;
     }
 
     isOutOfBounds(limitY) {
@@ -40,22 +159,106 @@ export class Palabra {
     }
 
     setSelected(value) {
+        if (this.isSelected === value)
+            return;
+
         this.isSelected = value;
-    }
 
-    updateVisual(inputText) {
-        if (this.isSelected && inputText.length > 0) {
-            const correctPart = this.texto.substring(0, inputText.length);
-            const restPart = this.texto.substring(inputText.length);
+        this.scene.tweens.killTweensOf(this.container);
 
-            const formatted = `[color=#00aa00]${correctPart}[/color]${restPart}`;
-            this.textObj.setText(formatted);
+        this.scene.tweens.killTweensOf(this.backgroundGlow);
+
+        if (value) {
+
+            // =====================
+            // GLOW ON
+            // =====================
+
+            this.backgroundGlow.setActive(true);
+
+            this.backgroundGlow.outerStrength = 0;
+
+            this.selectTween = this.scene.tweens.add({
+
+                targets: this.backgroundGlow,
+
+                outerStrength: 5,
+
+                yoyo: true,
+
+                repeat: -1,
+
+                duration: 350
+            });
+
         } else {
-            this.textObj.setText(this.texto);
+
+            // =====================
+            // GLOW OFF
+            // =====================
+
+            this.scene.tweens.add({
+
+                targets: this.backgroundGlow,
+
+                outerStrength: 0,
+
+                duration: 120,
+
+                ease: 'Sine.Out',
+
+                onComplete: () => {
+
+                    this.backgroundGlow.setActive(false);
+                }
+            });
+
+            // =====================
+            // RESET SCALE
+            // =====================
+
+            this.scene.tweens.add({
+
+                targets: this.container,
+
+                scaleX: 1,
+                scaleY: 1,
+
+                duration: 100
+            });
         }
     }
 
+    refreshBackgroundSize() {
+
+        const width =
+            this.baseText.width + this.paddingX;
+
+        const height =
+            this.baseText.height + this.paddingY;
+
+        this.background.resize(width, height);
+    }
+
+    getCorrectCharacterCount(inputText) {
+
+        let count = 0;
+
+        for (let i = 0; i < inputText.length; i++) {
+
+            if (inputText[i] !== this.texto[i]) {
+                break;
+            }
+
+            count++;
+        }
+
+        return count;
+    }
+
     destroy() {
+
+        this.maskGraphics.destroy();
         this.container.destroy();
     }
 }

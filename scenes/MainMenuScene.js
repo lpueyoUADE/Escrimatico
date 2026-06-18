@@ -1,5 +1,6 @@
 import BaseScene from './BaseScene.js';
 import TextButton from '../components/TextButton.js';
+import SaveManager from '../managers/SaveManager.js';
 
 export default class MainMenuScene extends BaseScene {
     constructor() {
@@ -17,11 +18,11 @@ export default class MainMenuScene extends BaseScene {
         }).setDepth(20);
 
         new TextButton(this, centerX, startY + spacing, 'High Scores', () => {
-             this.goToScene('HighScoreScene');
+            this.goToScene('HighScoreScene');
         }).setDepth(20);
 
         new TextButton(this, centerX, startY + spacing * 2, 'Créditos', () => {
-             this.goToScene('CreditsScene');
+            this.goToScene('CreditsScene');
         }).setDepth(20);
     }
 
@@ -44,7 +45,7 @@ export default class MainMenuScene extends BaseScene {
             width - 50,
             height - 25,
             0.3,
-            [1,1],
+            [1, 1],
             '¡Hola! Soy Yae la Yaguareté\n' +
             'y juntos vamos a conocer la Argentina una letra a la vez.'
         );
@@ -102,5 +103,17 @@ export default class MainMenuScene extends BaseScene {
         this.fireflies.setDepth(20);
 
         this.addTeamFooter();
+
+        this.input.keyboard.on(
+            'keydown-R',
+            () => {
+
+                SaveManager.resetSave();
+
+                console.log(
+                    "Progreso reiniciado"
+                );
+            }
+        );
     }
 }

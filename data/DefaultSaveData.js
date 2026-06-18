@@ -1,11 +1,8 @@
 const DefaultSaveData = {
     regions: {
         noroeste: {
-
             unlocked: true,
-
             levels: {
-
                 flora: {
                     unlocked: true,
                     completed: false,
@@ -13,7 +10,7 @@ const DefaultSaveData = {
                 },
 
                 fauna: {
-                    unlocked: true,
+                    unlocked: false,
                     completed: false,
                     score: 0
                 },
