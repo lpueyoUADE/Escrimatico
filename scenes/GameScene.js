@@ -21,21 +21,17 @@ export default class GameScene extends BaseScene {
             x: x,
             y: y,
 
-            speed: { min: 200, max: 300 },
-            angle: { min: 0, max: 360 },
+            speed: { min: 120, max: 260 },
+            scale: { start: 1, end: 0 },
+            lifespan: 350,
+            quantity: 30,
+            frequency: -1,
+            rotate: { min: 0, max: 360 },
 
-            scale: { start: 0.2, end: 0 },
-
-            alpha: { start: 0.7, end: 0 },
-
-            lifespan: lifespan,
-
-            tint: 0xaaffaa,
-            blendMode: 'ADD',
-
-            quantity: 20,
-            frequency: 200
+            tint: 0x55ff00
         });
+
+        particles.explode(50, x, y);
 
         this.time.delayedCall(lifespan, () => {
             particles.destroy();
@@ -332,6 +328,32 @@ export default class GameScene extends BaseScene {
                 );
             }
         });
+
+        // Particulas
+        this.fireflies = this.add.particles(0, 0, 'firefly', {
+            x: { min: 0, max: width },
+            y: { min: 0, max: height },
+
+            lifespan: { min: 4000, max: 6000 },
+
+            speedX: { min: -10, max: 10 },
+            speedY: { min: -5, max: 5 },
+
+            scale: { start: 0.3, end: 0.05 },
+
+            alpha: {
+                start: 0,
+                end: 0.7,
+                ease: 'Sine.easeInOut'
+            },
+
+            tint: 0x88ff88,
+
+            frequency: 50,
+
+            blendMode: 'ADD'
+        })
+            .setDepth(5);
     }
 
     update() {
@@ -453,44 +475,11 @@ export default class GameScene extends BaseScene {
         }
     }
 
-    checkError() {
-
-        if (!this.currentTarget) {
-
-            this.hasError = false;
-            return;
-        }
-
-        const hasMismatch =
-            !this.currentTarget.texto.startsWith(
-                this.inputText
-            );
-
-        // Nuevo error
-        if (hasMismatch && !this.hasError) {
-
-            this.hasError = true;
-
-            this.perderVida();
-
-            this.cameras.main.shake(80, 0.002);
-        }
-
-        // Volvió a ser válido
-        else if (!hasMismatch) {
-
-            this.hasError = false;
-        }
-    }
-
     tryCompleteWord() {
 
         if (!this.currentTarget) {
-
             this.cameras.main.shake(80, 0.003);
-            this.sound.play('error', {
-                volume: 1
-            });
+
             return;
         }
 
@@ -545,7 +534,9 @@ export default class GameScene extends BaseScene {
         else {
 
             this.perderVida();
-
+            this.sound.play('error', {
+                volume: 1
+            });
             this.cameras.main.shake(
                 120,
                 0.004

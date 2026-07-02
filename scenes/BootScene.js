@@ -57,7 +57,7 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('title', 'assets/images/mainmenu/title.png');
         this.load.image('water', 'https://labs.phaser.io/assets/particles/blue.png');
         this.load.image('firefly', 'https://labs.phaser.io/assets/particles/yellow.png');
-        this.load.image('explosion', 'https://labs.phaser.io/assets/particles/red.png');
+        this.load.image('explosion', 'assets/images/particles/square.jpg');
 
         // Level Select
         this.load.image('noroeste_flora', 'assets/images/regions/noroeste/noroeste_flora.jpg');
